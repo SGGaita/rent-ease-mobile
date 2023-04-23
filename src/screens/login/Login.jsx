@@ -2,22 +2,20 @@ import React, { useState, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
-
   Text,
   StyleSheet,
   ImageBackground,
   Image,
   KeyboardAvoidingView,
   ActivityIndicator,
-  Modal
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { AuthContext } from '../../context/AuthContext';
 import { CustomSnackBar } from '../../components';
 import { TextInput } from 'react-native-paper';
-
+import { useDispatch } from 'react-redux';
+import { userSlice } from '../../redux/userSlice';
 
 
 
@@ -28,10 +26,10 @@ export const Login = ({ navigation }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  //const {dispatch} = useContext(AuthContext)
+  const dispatch = useDispatch()
   const [show, setShow] = useState(false)
   const [visible, setVisible] = useState(false);
-  const [isError, setIsError] = useState(true)
+
 
 
 
@@ -61,7 +59,7 @@ export const Login = ({ navigation }) => {
       setVisible(!visible)
       return;
     }
-   
+
 
     if (!password) {
       setError('Password is required.');
@@ -75,22 +73,30 @@ export const Login = ({ navigation }) => {
       .then(async (userCredential) => {
 
         const usercred = userCredential.user;
-        console.log('User account created & signed in!', usercred);
+        //console.log('User account created & signed in!', usercred);
         // fetch user details from Firebase
         const userDoc = await firestore().collection('Users').doc(usercred.uid).get();
         const user = userDoc.data();
 
-        console.log("user data1", user)
+        //console.log("user data1", user)
 
-        let userData = { ...user, 'uid': usercred.uid }
+        let userData = {
+          'uid': usercred.uid,
+          "tenantID": user.tenantID,
+          "firstName": user.firstName,
+          "lastName": user.lastName,
+          "email": user.email,
+          "phoneNumber": user.phoneNumber,
+          "type": user.type
+        }
 
-        console.log("user data", userData)
+        //console.log("user data", userData)
 
         // Clear error if any
         setError('')
         setShow(false)
-        dispatch({type:'LOGIN', payload: userData})
-        //navigation.navigate(routes.HOME_TAB)
+        dispatch(userSlice.actions.setUser(userData))
+        navigation.navigate(routes.HOME_TAB)
 
       })
       .catch(error => {
@@ -114,7 +120,7 @@ export const Login = ({ navigation }) => {
           return;
         }
 
-        
+
 
       });
 
@@ -173,7 +179,7 @@ export const Login = ({ navigation }) => {
                 onChangeText={handlePasswordChange}
                 value={password}
                 secureTextEntry={true}
-                // right={<TextInput.Icon icon="camera" />}
+              // right={<TextInput.Icon icon="camera" />}
               />
 
 

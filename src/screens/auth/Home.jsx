@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { COLORS, FONTS, SIZES, icons } from '../../constants'
 import firestore from '@react-native-firebase/firestore';
+import { useSelector } from 'react-redux'
+import { RentInformation } from '../../components/RentInformation';
 
 export const Home = () => {
   const [today, setToday] = useState(new Date());
   const [tenant, setTenant] = useState()
+  const user = useSelector(state => state.user.user)
 
   useEffect(() => {
 
@@ -49,35 +52,11 @@ export const Home = () => {
     <View style={styles.container}>
       <View style={styles.tenantinfo}>
         <Text>{formattedDate}</Text>
-        <Text style={{ marginTop: SIZES.padding * 0.6, fontWeight: 800, ...FONTS.h4, color: COLORS.white }}>{greeting}, Steve Gaikia</Text>
+        <Text style={{ marginTop: SIZES.padding * 0.6, fontWeight: 800, ...FONTS.h4, color: COLORS.white }}>{greeting}, {user.firstName} {user.lastName}</Text>
       </View >
       <View style={styles.body}>
         <View style={styles.due}>
-          <View style={{ flex: 1, flexDirection: 'row' }}>
-            <Image source={icons.location}
-              resizeMode='contain'
-              style={{
-                width: 20,
-                height: 20,
-                tintColor: COLORS.grey
-              }}
-            />
-            <Text style={{ fontWeight: 100, ...FONTS.body3, color: COLORS.navy }}>Central Lane Apartments</Text>
-          </View>
-
-          <View style={{ flex: 2, flex: 1, alignItems: 'center', justifyContent: 'space-around', flexDirection: 'row' }}>
-            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-              <Text style={{ fontWeight: 800, ...FONTS.h4, color: COLORS.navy }}> Payment Due</Text>
-              <Text style={{ fontWeight: 100, ...FONTS.body1, color: COLORS.limeDark }}>Kes 15,000</Text>
-            </View>
-
-            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-              <Text style={{ fontWeight: 800, ...FONTS.h3, color: COLORS.navy }}>Due date</Text>
-              <Text style={{ fontWeight: 100, ...FONTS.body2, color: COLORS.navy }}>5th May, 2023</Text>
-            </View>
-
-
-          </View>
+          <RentInformation />
 
         </View>
 
