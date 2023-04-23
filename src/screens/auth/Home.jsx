@@ -23,7 +23,7 @@ export const Home = () => {
     //fetch tenant
     const subscriber = firestore()
       .collection('Tenants')
-      .doc("qOScp9WBCDko0PFTOZtz")
+      .doc(user.uid)
       .onSnapshot(documentSnapshot => {
         setTenant(documentSnapshot.data());
       });

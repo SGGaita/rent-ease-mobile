@@ -20,7 +20,7 @@ const App = () => {
           <Stack.Navigator
             screenOptions={{
               headerShown: false
-            }} initialRouteName={routes.HOME_TAB}>
+            }} initialRouteName={routes.LOGIN}>
             <Stack.Screen name={routes.LOGIN} component={Login} />
             <Stack.Screen name={routes.HOME_TAB} component={BottomTabNavigator} />
           </Stack.Navigator>
